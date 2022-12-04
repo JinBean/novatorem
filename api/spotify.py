@@ -84,19 +84,6 @@ def barGen(barCount):
         left += 4
     return barCSS
 
-def staticBarGen(barCount):
-    barCSS = ""
-    left = 1
-    for i in range(1, barCount + 1):
-        barCSS += (
-            ".bar:nth-child({})  {{ left: {}px; animation-duration: {}ms; }}".format(
-                i, left, 1000
-            )
-        )
-        left += 4
-    return barCSS
-
-
 def getTemplate():
     try:
         file = open("api/templates.json", "r")
@@ -118,7 +105,7 @@ def makeSVG(data, background_color, border_color):
     barCSS = barGen(barCount)
 
     if data == {} or data["item"] == "None" or data["item"] is None:
-        contentBar = staticBarGen(barCount)
+        contentBar = ""
         currentStatus = "Was playing:"
         recentPlays = recentlyPlayed()
         recentPlaysLength = len(recentPlays["items"])
