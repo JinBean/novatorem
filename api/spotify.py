@@ -22,7 +22,7 @@ FALLBACK_THEME = "spotify.html.j2"
 REFRESH_TOKEN_URL = "https://accounts.spotify.com/api/token"
 NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing"
 RECENTLY_PLAYING_URL = (
-    "https://api.spotify.com/v1/me/player/recently-played?limit=10"
+    "https://api.spotify.com/v1/me/player/recently-played?limit=1"
 )
 
 app = Flask(__name__)
@@ -84,6 +84,18 @@ def barGen(barCount):
         left += 4
     return barCSS
 
+def staticBarGen(barCount):
+    barCSS = ""
+    left = 1
+    for i in range(1, barCount + 1):
+        barCSS += (
+            ".bar:nth-child({})  {{ left: {}px; animation-duration: {}ms; }}".format(
+                i, left, 1000
+            )
+        )
+        left += 4
+    return barCSS
+
 
 def getTemplate():
     try:
@@ -106,7 +118,7 @@ def makeSVG(data, background_color, border_color):
     barCSS = barGen(barCount)
 
     if data == {} or data["item"] == "None" or data["item"] is None:
-        # contentBar = "" #Shows/Hides the EQ bar if no song is currently playing
+        contentBar = staticBarGen(barCount)
         currentStatus = "Was playing:"
         recentPlays = recentlyPlayed()
         recentPlaysLength = len(recentPlays["items"])
@@ -114,7 +126,7 @@ def makeSVG(data, background_color, border_color):
         item = recentPlays["items"][itemIndex]["track"]
     else:
         item = data["item"]
-        currentStatus = "Vibing to:"
+        currentStatus = "🎵 Currently Vibing To 🎵:"
 
     if item["album"]["images"] == []:
         image = PLACEHOLDER_IMAGE
