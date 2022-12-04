@@ -84,6 +84,19 @@ def barGen(barCount):
         left += 4
     return barCSS
 
+def staticBarGen(barCount):
+    barCSS = ""
+    left = 1
+    for i in range(1, barCount + 1):
+        anim = 0
+        barCSS += (
+            ".bar:nth-child({})  {{ left: {}px; animation-duration: {}ms; }}".format(
+                i, left, anim
+            )
+        )
+        left += 4
+    return barCSS
+
 def getTemplate():
     try:
         file = open("api/templates.json", "r")
@@ -102,16 +115,17 @@ def loadImageB64(url):
 def makeSVG(data, background_color, border_color):
     barCount = 84
     contentBar = "".join(["<div class='bar'></div>" for i in range(barCount)])
-    barCSS = barGen(barCount)
 
     if data == {} or data["item"] == "None" or data["item"] is None:
-        contentBar = ""
+        # contentBar = ""
+        barCSS = staticBarGen(barCount)
         currentStatus = "Was playing:"
         recentPlays = recentlyPlayed()
         recentPlaysLength = len(recentPlays["items"])
         itemIndex = random.randint(0, recentPlaysLength - 1)
         item = recentPlays["items"][itemIndex]["track"]
     else:
+        barCSS = barGen(barCount)
         item = data["item"]
         currentStatus = "🎵 Currently Vibing To 🎵:"
 
